@@ -74,12 +74,12 @@ export default function Page() {
   const someNoStatus = list.some((item) => item.status);
 
   return (
-    <div className="h-screen">
+    <div>
       <div className="max-w-screen-2xl m-auto">
         <div className="p-4 space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-2xl font-bold">OpenAI Key 简易查询器</h1>
-            <p>
+            <p className="text-neutral-600">
               主要针对不能登录的 Key 进行批量查询，异常 Key
               简易进行复查，可能不准
             </p>
@@ -155,6 +155,14 @@ export default function Page() {
               </tbody>
             </table>
           </div>
+        </div>
+        <div className="text-center py-4">
+          <a
+            className="text-blue-500"
+            href="https://github.com/Chanzhaoyu/key-query-lite"
+          >
+            GitHub
+          </a>
         </div>
       </div>
     </div>
