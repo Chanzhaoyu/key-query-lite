@@ -33,9 +33,10 @@ export default function Page() {
   }
 
   async function onSubmit() {
-    for (const item of list) {
-      await handleQuery(item);
-    }
+    list.map((item) => {
+      if (item.status) return;
+      handleQuery(item);
+    });
   }
 
   async function handleQuery(item: ListItem) {
@@ -62,13 +63,15 @@ export default function Page() {
     setInput("");
   }
 
-  const someLoading = list.some((item) => item.loading);
-
   function updateFieldValue(id: number, field: keyof ListItem, value: any) {
     const index = list.findIndex((i) => i.id === id);
     (list[index][field] as any) = value;
     setList([...list]);
   }
+
+  const someLoading = list.some((item) => item.loading);
+
+  const someNoStatus = list.some((item) => item.status);
 
   return (
     <div className="h-screen">
@@ -101,7 +104,7 @@ export default function Page() {
               disabled={someLoading || !list.length}
               onClick={onSubmit}
             >
-              查询
+              {someNoStatus ? "查询失败项" : "查询"}
             </button>
             <button
               className="btn btn-error"
