@@ -33,46 +33,28 @@ export default function Page() {
   }
 
   async function onSubmit() {
-    try {
-      for (const item of list) {
-        handleQuery(item);
-      }
-    } finally {
-      // do nothing
+    for (const item of list) {
+      await handleQuery(item);
     }
   }
 
   async function handleQuery(item: ListItem) {
-    const index = list.findIndex((i) => i.id === item.id);
     try {
       const apiKey = item.apiKey;
       const model = item.model;
-      list[index].loading = true;
-      setList([...list]);
+      updateFieldValue(item.id, "loading", true);
       await axios.post("/api/code", { apiKey, model });
-      list[index].result = "正常";
+      updateFieldValue(item.id, "result", "正常");
     } catch (error: any) {
-      console.log(error.response.data);
       if (error?.response?.data) {
-        list[index].result = error?.response?.data;
+        updateFieldValue(item.id, "result", error.response.data);
       } else {
-        list[index].result = error.message;
+        updateFieldValue(item.id, "result", error.message);
       }
     } finally {
-      list[index].loading = false;
-      list[index].status = true;
-      setList([...list]);
+      updateFieldValue(item.id, "loading", false);
+      updateFieldValue(item.id, "status", true);
     }
-  }
-
-  function onSelectChange(
-    e: React.ChangeEvent<HTMLSelectElement>,
-    item: ListItem
-  ) {
-    item.model = e.target.value;
-    const index = list.findIndex((i) => i.id === item.id);
-    list[index] = item;
-    setList([...list]);
   }
 
   function onClear() {
@@ -81,6 +63,12 @@ export default function Page() {
   }
 
   const someLoading = list.some((item) => item.loading);
+
+  function updateFieldValue(id: number, field: keyof ListItem, value: any) {
+    const index = list.findIndex((i) => i.id === id);
+    (list[index][field] as any) = value;
+    setList([...list]);
+  }
 
   return (
     <div className="h-screen">
@@ -95,7 +83,6 @@ export default function Page() {
           </div>
           <textarea
             className="w-full textarea textarea-bordered"
-            disabled={someLoading}
             rows={6}
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -144,7 +131,9 @@ export default function Page() {
                       <select
                         className="select select-bordered w-full max-w-xs"
                         value={item.model}
-                        onChange={(e) => onSelectChange(e, item)}
+                        onChange={(e) =>
+                          updateFieldValue(item.id, "model", e.target.value)
+                        }
                       >
                         <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                         <option value="gpt-4-turbo">gpt-4</option>
