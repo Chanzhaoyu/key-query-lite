@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
+import { version } from "../package.json";
 
 interface ListItem {
   id: number;
@@ -156,7 +157,8 @@ export default function Page() {
             </table>
           </div>
         </div>
-        <div className="text-center py-4">
+        <div className="text-center py-4 space-x-2">
+          <span className="text-neutral-500">version: {version}</span>
           <a
             className="text-blue-500"
             href="https://github.com/Chanzhaoyu/key-query-lite"
